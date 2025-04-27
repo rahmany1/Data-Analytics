@@ -1,0 +1,58 @@
+
+/* Q6 - Fix this query:*/
+SELECT 
+        year AS "Housing Year",
+         month AS "Months",
+         midwest AS "Midwest",
+         south AS "South",
+         northeast AS "Northeast"
+FROM tutorial.housing_units_completed_us
+WHERE month IN (1,4,6)
+ORDER BY "Housing Year" DESC
+
+
+/* Q5. There are various tables about “animal crossing” in the tutorial database. 
+Can you find the one female villager born in October, whose hobby is fitness?
+
+SELECT *
+FROM tutorial.animal_crossing_villagers
+WHERE gender= 'Female' AND birthday LIKE '%Oct%'  AND hobby LIKE '%Fitness%'
+*/
+
+
+/* Q4.Using the tutorial.housing_units_completed_us table write a query that returns all rows for 
+which more units were produced in the West region than in the Midwest and Northeast combined.
+SELECT *
+FROM tutorial.housing_units_completed_us
+WHERE west > midwest and west >northeast
+
+*/
+
+
+/* Q3.Using the tutorial.city_populations table write a query that shows 
+how many cities had a population above one million.
+SELECT COUNT(*) 
+FROM tutorial.city_populations
+WHERE population_estimate_2012 >1000000
+*/
+
+/* Q2.Using the tutorial.billboard_top_100_year_end table 
+write a query that returns songs that ranked between 10 and 20 (inclusive) in 1993, 2003, or 2013. 
+Order the results by year and rank, and leave a comment on each line of the WHERE clause to indicate what that line does.
+SELECT *
+FROM tutorial.billboard_top_100_year_end
+WHERE (year_rank BETWEEN 10 AND 20) AND (year IN (1993,2003,2013))
+ORDER BY year, year_rank
+*/
+
+/* Q1.Using the tutorial.billboard_top_100_year_end table 
+write a query that lists all songs from the 1960s with "love" in the title.
+SELECT *
+FROM tutorial.billboard_top_100_year_end
+WHERE (year BETWEEN 1960 AND 1969)
+AND song_name ILIKE '%love%'
+*/
+
+
+
+
