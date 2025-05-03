@@ -1,16 +1,16 @@
 
+/** Q1.1. Write a query that shows top 10 actresses/actors that have the highest average rating.**/
 
-/** Q1.1. Write a query that shows top 10 actresses/actors that have the highest average rating. 
 SELECT 
   name, 
   AVG(rating) AS a
   FROM tutorial.nominee_filmography
   GROUP BY name
-  ORDER BY a DESC
-  LIMIT 10
-  **/
+  ORDER BY a DESC 
+  LIMIT 10 
+
   
-  /**  Q1.2. Write a query that shows names of the actors whose average rating is between 6 and 6.5.  
+/** Q1.2. Write a query that shows names of the actors whose average rating is between 6 and 6.5. 
   SELECT 
   name, 
   AVG(rating) AS a
@@ -20,16 +20,17 @@ SELECT
 ORDER BY a ASC
 **/
 
- /**  Q1.3.Choose 3-4 of your favorite actors/actresses to check what is their MAX, MIN and AVG rating. 
+
+ /**  Q1.3.Choose 3-4 of your favorite actors/actresses to check what is their MAX, MIN and AVG rating.
   SELECT 
   name, 
   MAX(rating) As m,
   MIN(rating) As mi,
   AVG(rating) AS a
-  FROM tutorial.nominee_filmography
+  FROM tutorial.nominee_filmography as n
+  WHERE name IN ('Gerard Depardieu', 'Shirley Booth', 'Ken Watanabe')
   GROUP BY name
-LIMIT 4
-**/
+ **/
 
 /** Q2. Write a query that joins benn.college_football_players and 
 benn.college_football_teams to then display player names, school names 
@@ -39,33 +40,28 @@ SELECT
 fp.player_name,
 fp.school_name,
 ft.conference
+
 FROM benn.college_football_players AS fp
 JOIN benn.college_football_teams AS ft
-ON fp.id=fp.id
-WHERE ft.conference = 'FBS Independents'
+ON fp.school_name=ft.school_name
+WHERE ft.division = 'FBS (Division I-A Teams)'
 **/
+
 
 /** Q3. Let’s go back to The Office. 
 Check the tutorial.dunder_mifflin_paper_sales table. 
 Now that you know the GROUP BY clause, write a query showing the 
 performance numbers of all account managers. 
-
-
 SELECT
 account_manager,
-count(*)
-FROM tutorial.dunder_mifflin_paper_sales 
+AVG(rating) 
+FROM tutorial.dunder_mifflin_paper_sales
 GROUP BY account_manager
-ORDER BY count(*) DESC
+ORDER BY AVG(rating) DESC
 **/
 
+
 /** q3.2Using a comment block argue a case on who’s the best and 
-who’s the worst performing one based on attributes of your own choosing. **/
-SELECT
-account_manager,
-count(rating)
-FROM tutorial.dunder_mifflin_paper_sales 
-GROUP BY account_manager
-ORDER BY count(rating) DESC
-
-
+who’s the worst performing one based on attributes of your own choosing. 
+I chose rating as a performance indicator. It shows that the performance of Oscar Martinez is best and Dwight Schrute is worst. 
+**/
