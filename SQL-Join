@@ -1,0 +1,30 @@
+SELECT  *  FROM tutorial.excel_sql_transaction_data;
+SELECT * FROM tutorial.excel_sql_inventory_data;
+
+
+/**Task 1
+For each product name, determine how many orders were received. Use a Left Join for this task, and then change to Inner Join. How are the results different and why?**/
+SELECT
+inv.product_name,
+COUNT(tra.transaction_id)
+FROM tutorial.excel_sql_inventory_data AS inv
+INNER JOIN tutorial.excel_sql_transaction_data AS tra
+ON inv.product_id = tra.product_id
+Group BY product_name;
+
+/** Task 2
+Calculate the total sales amount per category, per day, What is the product that has made the least/most sales amount? **/
+SELECT
+inv.product_name,
+inv.product_type,
+DATE(tra.time),
+SUM(inv.price_unit) * COUNT(tra.transaction_id) as totalsales
+FROM tutorial.excel_sql_inventory_data AS inv
+INNER JOIN tutorial.excel_sql_transaction_data AS tra
+ON inv.product_id = tra.product_id
+Group BY inv.product_name,inv.product_type, tra.time
+ORDER BY  tra.time DESC 
+
+
+
+
