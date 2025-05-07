@@ -1,0 +1,60 @@
+/** 1. Get an Overview of the datasets 
+Explore the two datasets: events and users
+What could be great columns to analyze? **/
+
+SELECT * FROM tutorial.yammer_events ;
+SELECT * FROM tutorial.yammer_users ORDER BY company_id ASC;
+
+/**  2.Analyze Users
+Which language do they use?
+How many companies are in the database? 
+Which is the company with the most users? **/
+
+SELECT language FROM tutorial.yammer_users  GROUP BY language;
+SELECT COUNT(company_id) FROM tutorial.yammer_users;
+
+SELECT company_id, COUNT(user_id) AS usr FROM tutorial.yammer_users 
+GROUP BY company_id ORDER BY COUNT(user_id) DESC;
+
+
+/**  3.Analyze Events
+From which location are most of the events?
+Which are the most frequent events?
+Which devices are used?
+How many events are there per day? 
+Create a chart for the events per day **/
+SELECT location, COUNT(*) FROM tutorial.yammer_events 
+GROUP BY location ORDER BY 2 DESC;
+
+SELECT event_name, COUNT(*) FROM tutorial.yammer_events 
+GROUP BY event_name ORDER BY 2 DESC;
+
+SELECT device FROM tutorial.yammer_events GROUP BY device;
+
+SELECT DATE(occurred_at), COUNT(event_name) FROM tutorial.yammer_events 
+GROUP BY DATE(occurred_at) ;
+
+
+/** 4. Analyze Users and Events
+Which company has the most logins?
+How many interactions are there daily via mobile devices? **/
+SELECT company_id, count(*) 
+FROM tutorial.yammer_events AS even 
+INNER JOIN tutorial.yammer_users AS usr 
+ON even.user_id = usr.user_id 
+WHERE even.event_name = 'login'
+GROUP BY company_id
+ORDER BY 2 DESC
+LIMIT 1;
+
+
+
+SELECT DATE(even.occurred_at), count(*) AS interaction
+FROM tutorial.yammer_events AS even 
+INNER JOIN tutorial.yammer_users AS usr 
+ON even.user_id = usr.user_id 
+WHERE even.device IN ('amazon fire phone','htc one', 'iphone 4s', 'iphone 5', 'iphone 5s','nokia lumia 635','samsung galaxy s4','samsung galaxy note')
+GROUP BY 1 
+ORDER BY 1 ASC;
+
+
