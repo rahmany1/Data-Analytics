@@ -1,0 +1,140 @@
+SELECT 
+*
+FROM tutorial.flights
+LIMIT 100
+
+
+/** Task 1: Categorize Arrival Delays
+Question: Use a CTE to create a new column called arrival_delay_category using a CASE WHEN statement with the following rules:
+'Early' if arrival_delay is less than 0
+'On Time' if arrival_delay is exactly 0
+'Late' if arrival_delay is greater than 0 **/ 
+WITH categorized_flights AS (
+  SELECT 
+    *, 
+    CASE 
+      WHEN (arrival_delay < 0) THEN 'Early'
+      WHEN (arrival_delay = 0) THEN 'On Time'
+      WHEN arrival_delay > 0 THEN 'Late'
+      ELSE 'Unknown'
+    END AS arrival_delay_category
+  FROM tutorial.flights
+)
+SELECT arrival_delay_category, COUNT(*) 
+FROM categorized_flights
+GROUP BY arrival_delay_category
+LIMIT 100
+
+/** Task 2: Classify Flights by Distance
+Question: Using a CASE WHEN statement inside a CTE, classify each flight by distance into a column called distance_category:
+'Short-haul' if distance is less than 800
+'Medium-haul' if distance is between 800 and 2200
+'Long-haul' if distance is greater than 2200
+From the CTE, return the number of flights and average air time per distance_category. **/ 
+WITH distance_category AS (
+  SELECT 
+    *, 
+    CASE 
+      WHEN (distance < 800) THEN 'Short-haul'
+      WHEN (distance BETWEEN 800 AND 2200) THEN 'Medium-haul'
+      WHEN distance > 2200 THEN 'Long-haul'
+    END AS arrival_distance_category
+  FROM tutorial.flights
+)
+SELECT arrival_distance_category, COUNT(*) AS number_of_flights, AVG(air_time) AS average_air_time
+FROM distance_category
+GROUP BY arrival_distance_category
+LIMIT 100
+
+/** Task 3: Cancellations by Reason
+Question: Create a CTE that uses a CASE WHEN statement to categorize the cancellation_reason column into:
+'Weather'
+'Carrier'
+'Security'
+'Other' for any other values or NULLs
+Filter the dataset to only include cancelled flights. From the CTE, return the number of cancellations by reason category. **/ 
+WITH reason_category AS (
+  SELECT 
+    *, 
+    CASE 
+      WHEN cancellation_reason LIKE 'Carrier' THEN 'Carrier'
+      WHEN cancellation_reason LIKE 'National Air System'THEN 'Security'
+      WHEN cancellation_reason LIKE 'Weather' THEN 'Weather'
+      ELSE 'Other'
+    END AS cancellation_category
+  FROM tutorial.flights
+)
+SELECT cancellation_category, COUNT(*) AS number_of_cancellations
+FROM reason_category
+GROUP BY cancellation_category
+LIMIT 100
+
+/** Task 4: Departure Delay Severity
+Create a CTE that adds a column called departure_delay_severity using a CASE WHEN statement:
+'None' for 0 minutes
+'Minor' for 1–15 minutes
+'Moderate' for 16–60 minutes
+'Severe' for more than 60 minutes
+Then return the total number of flights in each severity category.
+**/ 
+WITH severity_category AS (
+  SELECT 
+    *, 
+    CASE 
+      WHEN departure_delay= 0 THEN 'None'
+     WHEN departure_delay BETWEEN 1 AND 15 THEN 'Minor'
+     WHEN departure_delay BETWEEN 16 AND 60  THEN 'Moderate'
+     WHEN departure_delay> 60 THEN 'Severe'
+     ELSE 'Unknown'
+    END AS departure_delay_severity
+  FROM tutorial.flights
+)
+SELECT departure_delay_severity, COUNT(*) AS number_of_flights 
+FROM severity_category
+GROUP BY departure_delay_severity
+
+/** Task 5:  Rate Airline Delay Performance
+Question: First, create a CTE that calculates the average arrival delay per airline.
+ Then, using a second CTE or inside the same one, use a CASE WHEN statement to create a new column called delay_rating:
+'Excellent' if the average delay is less than 0
+'Good' if it’s between 0 and 10
+'Poor' if it’s greater than 10
+Finally, return each airline’s name, average arrival delay, and delay rating.
+**/ 
+WITH average_arrival_delay_per_airline As(
+SELECT 
+*,
+    CASE 
+      WHEN arrival_delay < 0 THEN 'Excellent'
+     WHEN arrival_delay BETWEEN 0 AND 10 THEN 'Good'
+     WHEN arrival_delay >10  THEN 'Poor'
+    END AS arrival_delay_rating
+  FROM tutorial.flights
+)
+SELECT airline_name, AVG(arrival_delay) AS arrival_delay_flights 
+FROM average_arrival_delay_per_airline
+GROUP BY airline_name
+
+/** Task 6: Departure Delay Severity
+Use a CTE to create a new column called multi_delay_flag using a CASE WHEN statement. This column should be:
+'Yes' if the flight has more than one of the following delay types greater than 0: weather_delay, carrier_delay, late_aircraft_delay, nas_delay, or security_delay
+'No' otherwise
+Then return the count of flights that fall into each category.
+**/ 
+WITH departure_delay_severity As(
+SELECT 
+*,
+    CASE 
+      WHEN weather_delay > 0 OR 
+      carrier_delay > 0 OR
+      late_aircraft_delay > 0  OR 
+       security_delay > 0 THEN 'Yes'
+     ELSE 'No'
+    END AS multi_delay_flag
+  FROM tutorial.flights
+)
+SELECT multi_delay_flag, COUNT(*) AS arrival_delay_flights 
+FROM departure_delay_severity
+GROUP BY multi_delay_flag
+LIMIT 100
+
